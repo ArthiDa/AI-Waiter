@@ -10,6 +10,38 @@ class Cell:
         self.f = float("inf")  # Total cost of the cell (g + h)
         self.g = float("inf")  # Cost from start to this cell
         self.h = 0  # Heuristic cost from this cell to destination
+        self.mat = [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 0, 1, 1, 1],
+            [1, 1, 0, 1, 1, 1, 1, 1, 1],
+            [0, 0, 0, 1, 1, 1, 0, 0, 1],
+            [0, 0, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 0, 1, 1],
+            [1, 1, 1, 1, 1, 1, 0, 0, 0],
+            [1, 0, 1, 0, 0, 1, 1, 0, 0],
+        ]
+        self.src = (4, 4)
+        self.targets = [
+            (0, 0),
+            (0, 5),
+            (0, 8),
+            (2, 0),
+            (2, 8),
+            (5, 0),
+            (6, 7),
+            (8, 0),
+            (8, 2),
+            (8, 6),
+        ]
+
+    def construct_matrix(self, grid):
+        matrix = []
+        for i in range(ROW):
+            matrix.append([])
+            for j in range(COL):
+                matrix[i].append(grid[i][j])
+        return matrix
 
 
 # Define the size of the grid
@@ -174,17 +206,6 @@ def a_star_search(grid, src, dest):
 
 def main():
     # Define the grid (1 for unblocked, 0 for blocked)
-    grid = [
-        [1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
-        [1, 1, 1, 0, 1, 1, 1, 0, 1, 1],
-        [1, 1, 1, 0, 1, 1, 0, 1, 0, 1],
-        [0, 0, 1, 0, 1, 0, 0, 0, 0, 1],
-        [1, 1, 1, 0, 1, 1, 1, 0, 1, 0],
-        [1, 0, 1, 1, 1, 1, 0, 1, 0, 0],
-        [1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
-        [1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
-        [1, 1, 1, 0, 0, 0, 1, 0, 0, 1],
-    ]
 
     # Define the source and destination
     src = [8, 0]
