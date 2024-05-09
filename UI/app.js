@@ -34,7 +34,18 @@ function submitOrder() {
 
     console.log("Order submitted!", orderStorage);
   }
-  startAnimation();
+  const path = [{ row: 0, col: 0 }, { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 }, { row: 0, col: 4 }, { row: 0, col: 3 }, { row: 0, col: 2 }, { row: 0, col: 1 }, { row: 0, col: 0 }, { row: 1, col: 0 }, { row: 2, col: 0 }, { row: 3, col: 0 }, { row: 4, col: 0 }, { row: 5, col: 0 }, { row: 6, col: 0 }, { row: 7, col: 0 }, { row: 8, col: 0 }, { row: 8, col: 1 }, { row: 8, col: 2 }, { row: 8, col: 3 }, { row: 8, col: 4 }, { row: 8, col: 5 }, { row: 8, col: 6 }, { row: 8, col: 7 }, { row: 8, col: 8 }, { row: 7, col: 8 }, { row: 6, col: 8 }, { row: 5, col: 8 }, { row: 4, col: 8 }, { row: 3, col: 8 }, { row: 2, col: 8 }, { row: 1, col: 8 }, { row: 0, col: 8 }, { row: 0, col: 7 }, { row: 0, col: 6 }, { row: 0, col: 5 }];
+
+  // suffle the path
+  const path1 = [...path]
+  const path2 = [...path]
+
+  startAnimation(path1.sort((a, b) => a.col - b.col), 400)
+
+
+
+
+
 
 }
 
@@ -191,8 +202,8 @@ function openModal(tableNumber) {
 }
 
 
-const startAnimation = () => {
-  const path = [{ row: 0, col: 0 }, { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 }, { row: 0, col: 4 }, { row: 0, col: 3 }, { row: 0, col: 2 }, { row: 0, col: 1 }, { row: 0, col: 0 }, { row: 1, col: 0 }, { row: 2, col: 0 }, { row: 3, col: 0 }, { row: 4, col: 0 }, { row: 5, col: 0 }, { row: 6, col: 0 }, { row: 7, col: 0 }, { row: 8, col: 0 }, { row: 8, col: 1 }, { row: 8, col: 2 }, { row: 8, col: 3 }, { row: 8, col: 4 }, { row: 8, col: 5 }, { row: 8, col: 6 }, { row: 8, col: 7 }, { row: 8, col: 8 }, { row: 7, col: 8 }, { row: 6, col: 8 }, { row: 5, col: 8 }, { row: 4, col: 8 }, { row: 3, col: 8 }, { row: 2, col: 8 }, { row: 1, col: 8 }, { row: 0, col: 8 }, { row: 0, col: 7 }, { row: 0, col: 6 }, { row: 0, col: 5 }]
+const startAnimation = (path, timeDelay = 1000) => {
+
   // get row+col+1 th square and add class active and remove it after 1s and go to next path
   let i = 0;
   const interval = setInterval(() => {
@@ -200,11 +211,11 @@ const startAnimation = () => {
     square.classList.add("active-waiter");
     setTimeout(() => {
       square.classList.remove("active-waiter");
-    }, 1000);
+    }, timeDelay);
     i++;
     if (i === path.length) {
       clearInterval(interval);
     }
-  }, 1000);
+  }, timeDelay);
 
 }
