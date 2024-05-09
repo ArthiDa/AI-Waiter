@@ -31,10 +31,10 @@ function submitOrder() {
   // Check if there is an order
   if (orderStorage.length > 0) {
     // Send the order to the API
+
     console.log("Order submitted!", orderStorage);
-  } else {
-    alert("No order to submit!");
   }
+  startAnimation();
 
 }
 
@@ -87,6 +87,9 @@ document.addEventListener("DOMContentLoaded", function () {
     for (let j = 0; j < cols; j++) {
       const square = document.createElement("div");
       square.classList.add("square");
+      // add data attributes to the square
+      square.dataset.row = i;
+      square.dataset.col = j;
 
       // Add additional classes based on the square position
       if (i === 0 && (j === 0 || j === 5 || j === 8)) {
@@ -185,4 +188,23 @@ function openModal(tableNumber) {
     modalInstance.hide();
     document.body.removeChild(modal);
   });
+}
+
+
+const startAnimation = () => {
+  const path = [{ row: 0, col: 0 }, { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 }, { row: 0, col: 4 }, { row: 0, col: 3 }, { row: 0, col: 2 }, { row: 0, col: 1 }, { row: 0, col: 0 }, { row: 1, col: 0 }, { row: 2, col: 0 }, { row: 3, col: 0 }, { row: 4, col: 0 }, { row: 5, col: 0 }, { row: 6, col: 0 }, { row: 7, col: 0 }, { row: 8, col: 0 }, { row: 8, col: 1 }, { row: 8, col: 2 }, { row: 8, col: 3 }, { row: 8, col: 4 }, { row: 8, col: 5 }, { row: 8, col: 6 }, { row: 8, col: 7 }, { row: 8, col: 8 }, { row: 7, col: 8 }, { row: 6, col: 8 }, { row: 5, col: 8 }, { row: 4, col: 8 }, { row: 3, col: 8 }, { row: 2, col: 8 }, { row: 1, col: 8 }, { row: 0, col: 8 }, { row: 0, col: 7 }, { row: 0, col: 6 }, { row: 0, col: 5 }]
+  // get row+col+1 th square and add class active and remove it after 1s and go to next path
+  let i = 0;
+  const interval = setInterval(() => {
+    const square = document.querySelector(`.square[data-row="${path[i].row}"][data-col="${path[i].col}"]`);
+    square.classList.add("active-waiter");
+    setTimeout(() => {
+      square.classList.remove("active-waiter");
+    }, 1000);
+    i++;
+    if (i === path.length) {
+      clearInterval(interval);
+    }
+  }, 1000);
+
 }
