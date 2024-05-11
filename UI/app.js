@@ -41,20 +41,21 @@ function submitOrder() {
         console.log(data);
         // get the path from the response and start the animation
         for (let i = 0; i < data.length; i++) {
-          startAnimation(data[i].path, 500);
+          startAnimation(data[i].path, 500 + ((i + 1) * 500));
         }
+        // clear the orderStorage
+        orderStorage.length = 0;
+        const orderList = document.getElementById("orderList");
+        orderList.innerHTML = "";
       })
       .catch((error) => {
         console.error("Error:", error);
-      });
+      })
   } else {
     console.log("No orders to submit.");
   }
 
-  // clear the orderStorage
-  orderStorage.length = 0;
-  const orderList = document.getElementById("orderList");
-  orderList.innerHTML = "";
+
 }
 
 // Add order to the orderStorage
@@ -68,6 +69,7 @@ function addOder(tableNumber, foodItemId) {
     if (foodItem) {
       foodItem.quantity++;
     } else {
+      // push the food item to the same table order
       order.foodItems.push({ id: foodItemId, quantity: 1 });
     }
   } else {
@@ -76,6 +78,7 @@ function addOder(tableNumber, foodItemId) {
       foodItems: [{ id: foodItemId, quantity: 1 }],
     });
   }
+
 
   // clear the order list and re-render
   const orderList = document.getElementById("orderList");
@@ -189,27 +192,27 @@ function openModal(tableNumber) {
           <div class="modal-body">
          
             ${foodItem
-              .map((item) => {
-                return `<span class="badge bg-primary mx-1" onClick="addOder('${tableNumber}','${item.id}')">${item.name}</span>`;
-              })
-              .join("")} 
+      .map((item) => {
+        return `<span class="badge bg-primary mx-1" onClick="addOder('${tableNumber}','${item.id}')">${item.name}</span>`;
+      })
+      .join("")} 
             
           </div>
           <div class="modal-body">
             <h5>Order List</h5>
             <ul id="orderList">
               ${orderStorage
-                .map((order) => {
-                  return order.foodItems
-                    .map((item) => {
-                      const food = foodItem.find(
-                        (food) => food.id === Number(item.id)
-                      );
-                      return `<li>${food.name} x ${item.quantity} - ${order.tableNumber} </li>`;
-                    })
-                    .join("");
-                })
-                .join("")}
+      .map((order) => {
+        return order.foodItems
+          .map((item) => {
+            const food = foodItem.find(
+              (food) => food.id === Number(item.id)
+            );
+            return `<li>${food.name} x ${item.quantity} - ${order.tableNumber} </li>`;
+          })
+          .join("");
+      })
+      .join("")}
             </ul>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
