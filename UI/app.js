@@ -1,52 +1,60 @@
-
 const foodItem = [
   {
     id: 1,
-    name: 'burger',
-    time: 5
+    name: "burger",
+    time: 5,
   },
   {
     id: 2,
-    name: 'pizza',
-    time: 10
+    name: "pizza",
+    time: 10,
   },
   {
     id: 3,
-    name: 'pasta',
-    time: 15
+    name: "pasta",
+    time: 15,
   },
   {
     id: 4,
-    name: 'sushi',
-    time: 20
+    name: "sushi",
+    time: 20,
   },
-
-]
-const orderStorage = [
-
 ];
+const orderStorage = [];
 
 // submit order to an API endpoint
 function submitOrder() {
+  let data;
   // Check if there is an order
   if (orderStorage.length > 0) {
-    // Send the order to the API
-
-    console.log("Order submitted!", orderStorage);
+    // Send the order to the API endpoint and get the response of details
+    fetch("http://127.0.0.1:5000/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(orderStorage),
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        data = responseData.details;
+        console.log(data);
+        // get the path from the response and start the animation
+        for (let i = 0; i < data.length; i++) {
+          startAnimation(data[i].path, 500);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  } else {
+    console.log("No orders to submit.");
   }
-  const path = [{ row: 0, col: 0 }, { row: 0, col: 1 }, { row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 }, { row: 0, col: 4 }, { row: 0, col: 3 }, { row: 0, col: 2 }, { row: 0, col: 1 }, { row: 0, col: 0 }, { row: 1, col: 0 }, { row: 2, col: 0 }, { row: 3, col: 0 }, { row: 4, col: 0 }, { row: 5, col: 0 }, { row: 6, col: 0 }, { row: 7, col: 0 }, { row: 8, col: 0 }, { row: 8, col: 1 }, { row: 8, col: 2 }, { row: 8, col: 3 }, { row: 8, col: 4 }, { row: 8, col: 5 }, { row: 8, col: 6 }, { row: 8, col: 7 }, { row: 8, col: 8 }, { row: 7, col: 8 }, { row: 6, col: 8 }, { row: 5, col: 8 }, { row: 4, col: 8 }, { row: 3, col: 8 }, { row: 2, col: 8 }, { row: 1, col: 8 }, { row: 0, col: 8 }, { row: 0, col: 7 }, { row: 0, col: 6 }, { row: 0, col: 5 }];
 
-  // suffle the path
-  const path1 = [...path]
-  const path2 = [...path]
-
-  startAnimation(path1.sort((a, b) => a.col - b.col), 400)
-
-
-
-
-
-
+  // clear the orderStorage
+  orderStorage.length = 0;
+  const orderList = document.getElementById("orderList");
+  orderList.innerHTML = "";
 }
 
 // Add order to the orderStorage
@@ -55,18 +63,18 @@ function addOder(tableNumber, foodItemId) {
   const order = orderStorage.find((order) => order.tableNumber === tableNumber);
 
   if (order) {
-
     // Check if the food item is already in the order
     const foodItem = order.foodItems.find((item) => item.id === foodItemId);
     if (foodItem) {
       foodItem.quantity++;
-    }
-    else {
+    } else {
       order.foodItems.push({ id: foodItemId, quantity: 1 });
     }
-
   } else {
-    orderStorage.push({ tableNumber, foodItems: [{ id: foodItemId, quantity: 1 }] });
+    orderStorage.push({
+      tableNumber,
+      foodItems: [{ id: foodItemId, quantity: 1 }],
+    });
   }
 
   // clear the order list and re-render
@@ -79,14 +87,10 @@ function addOder(tableNumber, foodItemId) {
       const li = document.createElement("li");
       li.textContent = `${food.name} x ${item.quantity} - ${order.tableNumber}`;
       orderList.appendChild(li);
-    }
-    )
+    });
   });
 
-
-
-
-  console.log(orderStorage)
+  // console.log(orderStorage);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -106,32 +110,54 @@ document.addEventListener("DOMContentLoaded", function () {
       if (i === 0 && (j === 0 || j === 5 || j === 8)) {
         square.classList.add("food");
         square.id = `t${tableNumber}`;
-        tableNumber++
+        tableNumber++;
       } else if (i === 2 && (j === 0 || j === 8)) {
         square.classList.add("food");
         square.id = `t${tableNumber}`;
-        tableNumber++
+        tableNumber++;
       } else if (i === 5 && j === 0) {
         square.classList.add("food");
         square.id = `t${tableNumber}`;
-        tableNumber++
+        tableNumber++;
       } else if (i === 6 && j === 7) {
         square.classList.add("food");
         square.id = `t${tableNumber}`;
-        tableNumber++
+        tableNumber++;
       } else if (i === 8 && (j === 0 || j === 2 || j === 6)) {
         square.classList.add("food");
         square.id = `t${tableNumber}`;
-        tableNumber++
+        tableNumber++;
       } else if (i === 4 && j === 4) {
         square.classList.add("kitchen");
         square.id = "kit";
-      } else if ((i === 1 || i === 3) && (j === 4 || j === 5)) {
-        square.classList.add("red");
       } else if (i % 2 === j % 2) {
         square.classList.add("white");
       } else {
         square.classList.add("black");
+      }
+
+      if (i === 1 || i === 2 || i == 3 || i == 4 || i >= 6) {
+        if (i == 1 && (j == 4 || j == 5)) {
+          square.classList.add("wall");
+        }
+        if (i == 2 && j == 2) {
+          square.classList.add("wall");
+        }
+        if (i == 3 && (j <= 3 || j == 6 || j == 7)) {
+          square.classList.add("wall");
+        }
+        if (i == 4 && j <= 1) {
+          square.classList.add("wall");
+        }
+        if (i == 6 && j == 6) {
+          square.classList.add("wall");
+        }
+        if (i == 7 && j >= 6) {
+          square.classList.add("wall");
+        }
+        if (i == 8 && (j == 1 || j == 3 || j == 4 || j >= 7)) {
+          square.classList.add("wall");
+        }
       }
 
       chessboard.appendChild(square);
@@ -142,9 +168,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const foodSquares = document.querySelectorAll(".food");
   foodSquares.forEach((square) => {
     square.addEventListener("click", (e) => {
-
       const tableNumber = square.id;
-      console.log(`Table ${tableNumber} clicked!`)
+      console.log(`Table ${tableNumber} clicked!`);
       openModal(tableNumber);
     });
   });
@@ -163,23 +188,28 @@ function openModal(tableNumber) {
           </div>
           <div class="modal-body">
          
-            ${foodItem.map((item) => {
-    return `<span class="badge bg-primary mx-1" onClick="addOder('${tableNumber}','${item.id}')">${item.name}</span>`
-  }).join('')} 
+            ${foodItem
+              .map((item) => {
+                return `<span class="badge bg-primary mx-1" onClick="addOder('${tableNumber}','${item.id}')">${item.name}</span>`;
+              })
+              .join("")} 
             
           </div>
           <div class="modal-body">
             <h5>Order List</h5>
             <ul id="orderList">
-              ${orderStorage.map((order) => {
-    return order.foodItems.map((item) => {
-      const food = foodItem.find((food) => food.id === Number(item.id));
-      return `<li>${food.name} x ${item.quantity} - ${order.tableNumber} </li>`;
-    }
-    ).join('');
-
-  }
-  ).join('')}
+              ${orderStorage
+                .map((order) => {
+                  return order.foodItems
+                    .map((item) => {
+                      const food = foodItem.find(
+                        (food) => food.id === Number(item.id)
+                      );
+                      return `<li>${food.name} x ${item.quantity} - ${order.tableNumber} </li>`;
+                    })
+                    .join("");
+                })
+                .join("")}
             </ul>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -201,13 +231,13 @@ function openModal(tableNumber) {
   });
 }
 
-
 const startAnimation = (path, timeDelay = 1000) => {
-
   // get row+col+1 th square and add class active and remove it after 1s and go to next path
   let i = 0;
   const interval = setInterval(() => {
-    const square = document.querySelector(`.square[data-row="${path[i].row}"][data-col="${path[i].col}"]`);
+    const square = document.querySelector(
+      `.square[data-row="${path[i].row}"][data-col="${path[i].col}"]`
+    );
     square.classList.add("active-waiter");
     setTimeout(() => {
       square.classList.remove("active-waiter");
@@ -217,5 +247,4 @@ const startAnimation = (path, timeDelay = 1000) => {
       clearInterval(interval);
     }
   }, timeDelay);
-
-}
+};

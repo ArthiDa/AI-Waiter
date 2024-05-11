@@ -1,6 +1,9 @@
 from flask import Flask, request
+from flask_cors import CORS
+from app import Algo
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/")
@@ -10,6 +13,11 @@ def hello_world():
 
 @app.route("/order", methods=["POST"])
 def order():
-    print(request.json, type(request.json))
-
-    return "<p>Order received!</p>"
+    orders = request.json
+    # print(orders)
+    algo = Algo()
+    details = algo.get_details(orders)
+    # sort the details according to time if time and cost are same then prefer the one with less path
+    details.sort(key=lambda x: (x["time"], x["cost"], len(x["path"])))
+    # print(details)
+    return {"details": details}
