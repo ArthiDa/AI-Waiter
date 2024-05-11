@@ -38,11 +38,7 @@ function submitOrder() {
       .then((response) => response.json())
       .then((responseData) => {
         data = responseData.details;
-        console.log(data);
-        // get the path from the response and start the animation
-        for (let i = 0; i < data.length; i++) {
-          startAnimation(data[i].path, 500 + ((i + 1) * 500));
-        }
+        startAnimations(data, 0);
         // clear the orderStorage
         orderStorage.length = 0;
         const orderList = document.getElementById("orderList");
@@ -50,12 +46,10 @@ function submitOrder() {
       })
       .catch((error) => {
         console.error("Error:", error);
-      })
+      });
   } else {
     console.log("No orders to submit.");
   }
-
-
 }
 
 // Add order to the orderStorage
@@ -78,7 +72,6 @@ function addOder(tableNumber, foodItemId) {
       foodItems: [{ id: foodItemId, quantity: 1 }],
     });
   }
-
 
   // clear the order list and re-render
   const orderList = document.getElementById("orderList");
@@ -192,27 +185,27 @@ function openModal(tableNumber) {
           <div class="modal-body">
          
             ${foodItem
-      .map((item) => {
-        return `<span class="badge bg-primary mx-1" onClick="addOder('${tableNumber}','${item.id}')">${item.name}</span>`;
-      })
-      .join("")} 
+              .map((item) => {
+                return `<span class="badge bg-primary mx-1" onClick="addOder('${tableNumber}','${item.id}')">${item.name}</span>`;
+              })
+              .join("")} 
             
           </div>
           <div class="modal-body">
             <h5>Order List</h5>
             <ul id="orderList">
               ${orderStorage
-      .map((order) => {
-        return order.foodItems
-          .map((item) => {
-            const food = foodItem.find(
-              (food) => food.id === Number(item.id)
-            );
-            return `<li>${food.name} x ${item.quantity} - ${order.tableNumber} </li>`;
-          })
-          .join("");
-      })
-      .join("")}
+                .map((order) => {
+                  return order.foodItems
+                    .map((item) => {
+                      const food = foodItem.find(
+                        (food) => food.id === Number(item.id)
+                      );
+                      return `<li>${food.name} x ${item.quantity} - ${order.tableNumber} </li>`;
+                    })
+                    .join("");
+                })
+                .join("")}
             </ul>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -234,7 +227,24 @@ function openModal(tableNumber) {
   });
 }
 
-const startAnimation = (path, timeDelay = 1000) => {
+function startAnimations(data, index) {
+  if (index >= data.length) {
+    // All animations have been started
+    return;
+  }
+
+  const path = data[index].path;
+  const reversePath = [...path].reverse();
+
+  startAnimation(path, 500, () => {
+    startAnimation(reversePath, 500, () => {
+      // Start the next animation after the current one is complete
+      startAnimations(data, index + 1);
+    });
+  });
+}
+
+const startAnimation = (path, timeDelay = 1000, callback) => {
   // get row+col+1 th square and add class active and remove it after 1s and go to next path
   let i = 0;
   const interval = setInterval(() => {
@@ -248,6 +258,8 @@ const startAnimation = (path, timeDelay = 1000) => {
     i++;
     if (i === path.length) {
       clearInterval(interval);
+      // Call the callback function when the animation is complete
+      callback();
     }
   }, timeDelay);
 };

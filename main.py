@@ -20,4 +20,8 @@ def order():
     # sort the details according to time if time and cost are same then prefer the one with less path
     details.sort(key=lambda x: (x["time"], x["cost"], len(x["path"])))
     # print(details)
-    return {"details": details}
+    if len(details) > 0:
+        return {"details": details}
+    else:
+        # return internal server error with status code 500
+        return {"error": "Internal Server Error"}, 500
