@@ -7,17 +7,22 @@ const foodItem = [
   {
     id: 2,
     name: "pizza",
-    time: 10,
+    time: 7,
   },
   {
     id: 3,
     name: "pasta",
-    time: 15,
+    time: 8,
   },
   {
     id: 4,
+    name: "sandwich",
+    time: 4,
+  },
+  {
+    id: 5,
     name: "sushi",
-    time: 20,
+    time: 6,
   },
 ];
 const orderStorage = [];
@@ -186,7 +191,7 @@ function openModal(tableNumber) {
          
             ${foodItem
               .map((item) => {
-                return `<span class="badge bg-primary mx-1" onClick="addOder('${tableNumber}','${item.id}')">${item.name}</span>`;
+                return `<span class="badge bg-primary mx-1 selectBadge p-3" onClick="addOder('${tableNumber}','${item.id}')">${item.name}</span>`;
               })
               .join("")} 
             
